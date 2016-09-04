@@ -11,12 +11,20 @@ end
 
 requestMapping['/access-token'] = {}
 requestMapping['/access-token']['POST'] = function(client)
-    return 200, {['Content-Type'] = 'text/html; charset=utf8'}, '<h1>Login is required</h1>'
+    return 200, {['Content-Type'] = 'text/html; charset=utf8'}, ''
 end
 
 requestMapping['/hello'] = {}
 requestMapping['/hello']['GET'] = function(client)
     return 200, {['Content-Type'] = 'text/html; charset=utf8'} , '<h1>Hello World</h1>'
+end
+
+requestMapping['/image'] = {}
+requestMapping['/image']['GET'] = function(client)
+    local file = assert(io.open('tux.jpg', 'r'))
+    local body = file:read('*a')
+    file:close()
+    return 200, {['Content-Type'] = 'image/jpeg'}, body
 end
 
 function onRequestStart(client)
