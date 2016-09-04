@@ -1,6 +1,5 @@
 requestMapping = {}
-requestMapping['/'] = {}
-requestMapping['/']['GET'] = function(client)
+requestMapping['']  = function(client)
     local body = function()
         coroutine.yield('<h1>Hello World!</h1>')
         for k, v in pairs(client) do
@@ -10,8 +9,13 @@ requestMapping['/']['GET'] = function(client)
     return 200, {['Content-Type'] = 'text/html; charset=utf8'}, body
 end
 
+requestMapping['/access-token'] = {}
+requestMapping['/access-token']['POST'] = function(client)
+    return 200, {['Content-Type'] = 'text/html; charset=utf8'}, '<h1>Login is required</h1>'
+end
+
 requestMapping['/hello'] = {}
-requestMapping['/hello']['POST'] = function(client)
+requestMapping['/hello']['GET'] = function(client)
     return 200, {['Content-Type'] = 'text/html; charset=utf8'} , '<h1>Hello World</h1>'
 end
 
@@ -26,6 +30,7 @@ function getContentLength(client)
 end
 
 function onBodyChunk(client, body_chunk)
+    print('onBodyChunk ' .. body_chunk)
     client['BODY'] = client['BODY'] .. body_chunk
 end
 
@@ -37,5 +42,5 @@ function onRequestFinish(client)
     if requestMapping[client['PATH_INFO']] ~= nil and requestMapping[client['PATH_INFO']][client['REQUEST_METHOD']] ~= nil then
         return requestMapping[client['PATH_INFO']][client['REQUEST_METHOD']](client)
     end
-    return 400, {['Content-Type'] = 'text/html; charset=utf8'}, '<h1>404 Not Found</h1>'
+    return requestMapping[''](client)
 end
