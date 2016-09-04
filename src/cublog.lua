@@ -1,5 +1,6 @@
 requestMapping = {}
-requestMapping['']  = function(client)
+requestMapping['/'] = {}
+requestMapping['/']['GET'] = function(client)
     local body = function()
         coroutine.yield('<h1>Hello World!</h1>')
         for k, v in pairs(client) do
@@ -13,6 +14,12 @@ requestMapping['/access-token'] = {}
 requestMapping['/access-token']['POST'] = function(client)
     return 200, {['Content-Type'] = 'text/html; charset=utf8'}, ''
 end
+
+requestMapping['/empty'] = {}
+requestMapping['/empty']['GET'] = function(client)
+    return 200, {}
+end
+
 
 requestMapping['/hello'] = {}
 requestMapping['/hello']['GET'] = function(client)
@@ -50,5 +57,5 @@ function onRequestFinish(client)
     if requestMapping[client['PATH_INFO']] ~= nil and requestMapping[client['PATH_INFO']][client['REQUEST_METHOD']] ~= nil then
         return requestMapping[client['PATH_INFO']][client['REQUEST_METHOD']](client)
     end
-    return requestMapping[''](client)
+    return 404, {['Content-Type'] = 'text/html; charset=utf8'}, '404 Not Found'
 end
