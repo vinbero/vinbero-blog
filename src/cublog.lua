@@ -55,16 +55,14 @@ function onHeadersFinish(request)
 end
 
 function getContentLength(request)
-    return request['CONTENT_LENGTH']
+    return request.contentLength
 end
 
 function onBodyChunk(request, body_chunk)
-    print('onBodyChunk ' .. body_chunk)
     request.body = request.body .. body_chunk
 end
 
 function onBodyFinish(request)
-    print(request.body)
     request.queryString = request.body
 end
 
