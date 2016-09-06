@@ -9,6 +9,9 @@ requestMapping['/']['GET'] = function(request)
                 coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
             end
         end
+        for key, value in pairs(request.headers) do
+            coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
+        end
     end
     return 200, {['Content-Type'] = 'text/html; charset=utf8'}, body
 end
@@ -57,27 +60,25 @@ end
 
 function onBodyChunk(request, body_chunk)
     print('onBodyChunk ' .. body_chunk)
-    request['BODY'] = request['BODY'] .. body_chunk
+    request.body = request.body .. body_chunk
 end
 
 function onBodyFinish(request)
-    print(request['BODY'])
-    request['QUERY_STRING'] = request['BODY']
+    print(request.body)
+    request.queryString = request.body
 end
 
 function onRequestFinish(request)
-    print('onRequestFinish')
     request.parameter = {}
-    if request['QUERY_STRING'] ~= nil then
-        for pair in string.gmatch(request['QUERY_STRING'], '([^&]+)') do
+    if request.queryString ~= nil then
+        for pair in string.gmatch(request.queryString, '([^&]+)') do
             for key, value in string.gmatch(pair, '([^=]+)=([^=]+)') do
                 request.parameter[key] = value
             end
         end
     end
-    print(request['PATH_INFO'])
-    if requestMapping[request['PATH_INFO']] ~= nil and requestMapping[request['PATH_INFO']][request['REQUEST_METHOD']] ~= nil then
-        return requestMapping[request['PATH_INFO']][request['REQUEST_METHOD']](request)
+    if requestMapping[request.pathInfo] ~= nil and requestMapping[request.pathInfo][request.method] ~= nil then
+        return requestMapping[request.pathInfo][request.method](request)
     end
     return 404, {['Content-Type'] = 'text/html; charset=utf8'}, '404 Not Found'
 end
