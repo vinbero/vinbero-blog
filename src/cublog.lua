@@ -42,6 +42,15 @@ router:setCallback('^/image', 'GET', function(request)
     return 200, {['Content-Type'] = 'image/jpeg'}, body
 end)
 
+router:setCallback('^/param/(?<num>\\d+)$', 'GET', function(request)
+    local body = function()
+        for key, value in pairs(request.parameter) do
+            coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
+        end
+    end
+    return 200, {['Content-Type'] = 'text/html; charset=utf8'}, body
+end)
+
 function onRequestStart(request)
 end
 
