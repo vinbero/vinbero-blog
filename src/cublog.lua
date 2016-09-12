@@ -1,6 +1,6 @@
 local cubelua = require 'cubelua'
 local router = cubelua.Router.new()
-router:setCallback('/', 'GET', function(request)
+router:setCallback('^/$', 'GET', function(request)
    local body = function()
        coroutine.yield('<h1>Hello World!</h1>')
        for key, value in pairs(request) do
@@ -16,26 +16,26 @@ router:setCallback('/', 'GET', function(request)
 end)
 
 math.randomseed(os.time())
-router:setCallback('/access-token', 'POST', function(request)
+router:setCallback('^/access-token', 'POST', function(request)
     if request.parameter['id'] == 'admin' and request.parameter['password'] == 'password' then
         return 200, {['Content-Type'] = 'text/html; charset=utf8'}, math.random()
     end 
     return 401, {}, '401 Unauthorized'
 end)
 
-router:setCallback('/error', 'GET', function(request)
+router:setCallback('^/error', 'GET', function(request)
     return 500, {}, '500 Internal Server Error'
 end)
 
-router:setCallback('/empty', 'GET', function(request)
+router:setCallback('^/empty', 'GET', function(request)
     return 200, {}
 end)
 
-router:setCallback('/hello', 'GET', function(request)
+router:setCallback('^/hello', 'GET', function(request)
     return 200, {['Content-Type'] = 'text/html; charset=utf8'}, '<h1>Hello World</h1>'
 end)
 
-router:setCallback('/image', 'GET', function(request)
+router:setCallback('^/image', 'GET', function(request)
     local file = assert(io.open('tux.jpg', 'r'))
     local body = file:read('*a')
     file:close()
