@@ -1,52 +1,46 @@
-math.randomseed(os.time())
-requestMapping = {}
-requestMapping['/'] = {}
-requestMapping['/']['GET'] = function(request)
-    local body = function()
-        coroutine.yield('<h1>Hello World!</h1>')
-        for key, value in pairs(request) do
-            if type(value) == 'string' then
-                coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
-            end
-        end
-        for key, value in pairs(request.headers) do
-            coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
-        end
-    end
-    return 200, {['Content-Type'] = 'text/html; charset=utf8'}, body
-end
+local cubelua = require 'cubelua'
+local router = cubelua.Router.new()
+router:setCallback('/', 'GET', function(request)
+   local body = function()
+       coroutine.yield('<h1>Hello World!</h1>')
+       for key, value in pairs(request) do
+           if type(value) == 'string' then
+               coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
+           end
+       end
+       for key, value in pairs(request.headers) do
+           coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
+       end
+   end
+   return 200, {['Content-Type'] = 'text/html; charset=utf8'}, body
+end)
 
-requestMapping['/access-token'] = {}
-requestMapping['/access-token']['POST'] = function(request)
+math.randomseed(os.time())
+router:setCallback('/access-token', 'POST', function(request)
     if request.parameter['id'] == 'admin' and request.parameter['password'] == 'password' then
         return 200, {['Content-Type'] = 'text/html; charset=utf8'}, math.random()
-    else
-        return 401, {}, '401 Unauthorized'
-    end
-end
+    end 
+    return 401, {}, '401 Unauthorized'
+end)
 
-requestMapping['/error'] = {}
-requestMapping['/error']['GET'] = function(request)
+router:setCallback('/error', 'GET', function(request)
     return 500, {}, '500 Internal Server Error'
-end
+end)
 
-requestMapping['/empty'] = {}
-requestMapping['/empty']['GET'] = function(request)
+router:setCallback('/empty', 'GET', function(request)
     return 200, {}
-end
+end)
 
-requestMapping['/hello'] = {}
-requestMapping['/hello']['GET'] = function(request)
-    return 200, {['Content-Type'] = 'text/html; charset=utf8'} , '<h1>Hello World</h1>'
-end
+router:setCallback('/hello', 'GET', function(request)
+    return 200, {['Content-Type'] = 'text/html; charset=utf8'}, '<h1>Hello World</h1>'
+end)
 
-requestMapping['/image'] = {}
-requestMapping['/image']['GET'] = function(request)
+router:setCallback('/image', 'GET', function(request)
     local file = assert(io.open('tux.jpg', 'r'))
     local body = file:read('*a')
     file:close()
     return 200, {['Content-Type'] = 'image/jpeg'}, body
-end
+end)
 
 function onRequestStart(request)
 end
@@ -75,8 +69,5 @@ function onRequestFinish(request)
             end
         end
     end
-    if requestMapping[request.pathInfo] ~= nil and requestMapping[request.pathInfo][request.method] ~= nil then
-        return requestMapping[request.pathInfo][request.method](request)
-    end
-    return 404, {['Content-Type'] = 'text/html; charset=utf8'}, '404 Not Found'
+    return router:route(request)
 end
