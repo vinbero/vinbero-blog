@@ -4,7 +4,7 @@ local posts = require 'cublog.model.posts'.Posts.new()
 local json = require 'json'
 
 router:setCallback('^/posts$', 'POST', function(request)
-    return 200, {['Content-Type'] = 'application/json; charset=utf8'}, posts:create(request.parameter['title'], request.parameter['text'], request.parameter['private'])
+    return 200, {['Content-Type'] = 'application/json; charset=utf8'}, posts:create(request.parameters['title'], request.parameters['text'], request.parameters['private'])
 end)
 
 router:setCallback('^/posts$', 'GET', function(request)
@@ -12,11 +12,11 @@ router:setCallback('^/posts$', 'GET', function(request)
 end)
 
 router:setCallback('^/posts/(?<id>\\d+)$', 'GET', function(request)
-    return 200, {['Content-Type'] = 'application/json; charset=utf8'}, json.encode(posts:get(request.parameter['id']))
+    return 200, {['Content-Type'] = 'application/json; charset=utf8'}, json.encode(posts:get(request.parameters['id']))
 end)
 
 router:setCallback('^/posts/(?<id>\\d+)$', 'PUT', function(request)
-    if posts:update(request.parameter['id'], request.parameter['title'], request.parameter['text'], request.parameter['private']) then
+    if posts:update(request.parameters['id'], request.parameters['title'], request.parameters['text'], request.parameters['private']) then
         return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'true'
     else
         return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'false'
@@ -24,7 +24,7 @@ router:setCallback('^/posts/(?<id>\\d+)$', 'PUT', function(request)
 end)
 
 router:setCallback('^/posts/(?<id>\\d+)$', 'DELETE', function(request)
-    if posts:delete(request.parameter['id']) then
+    if posts:delete(request.parameters['id']) then
         return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'true'
     else
         return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'false'
@@ -44,11 +44,11 @@ function onBodyFinish(request)
 end
 
 function onRequestFinish(request)
-    request.parameter = {}
+    request.parameters = {}
     if request.queryString ~= nil then
         for pair in string.gmatch(request.queryString, '([^&]+)') do
             for key, value in string.gmatch(pair, '([^=]+)=([^=]+)') do
-                request.parameter[key] = value
+                request.parameters[key] = value
             end
         end
     end
