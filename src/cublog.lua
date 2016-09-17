@@ -52,3 +52,7 @@ function onRequestFinish(request)
     cubelua.parseQueryString(request)
     return router:route(request)
 end
+
+function onDestroy()
+    posts:destroy()
+end
