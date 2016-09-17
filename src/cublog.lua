@@ -44,12 +44,6 @@ function onBodyFinish(request)
 end
 
 function onRequestFinish(request)
-    if request.queryString ~= nil then
-        for pair in string.gmatch(request.queryString, '([^&]+)') do
-            for key, value in string.gmatch(pair, '([^=]+)=([^=]+)') do
-                request.parameters[key] = value
-            end
-        end
-    end
+    cubelua.parseQueryString(request)
     return router:route(request)
 end
