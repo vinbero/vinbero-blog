@@ -12,14 +12,19 @@ router:setCallback('^/posts$', 'GET', function(request)
 end)
 
 router:setCallback('^/posts/(?<id>\\d+)$', 'GET', function(request)
-    return 200, {['Content-Type'] = 'application/json; charset=utf8'}, json.encode(posts:get(request.parameters['id']))
+    local post = posts:get(request.parameters['id'])
+    if post ~= nil then
+        return 200, {['Content-Type'] = 'application/json; charset=utf8'}, json.encode(posts:get(request.parameters['id']))
+    else
+        return 400, {['Content-Type'] = 'application/json; charset=utf8'}, 'null'
+    end
 end)
 
 router:setCallback('^/posts/(?<id>\\d+)$', 'PUT', function(request)
     if posts:update(request.parameters['id'], request.parameters['title'], request.parameters['text'], request.parameters['private']) then
         return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'true'
     else
-        return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'false'
+        return 500, {['Content-Type'] = 'application/json; charset=utf8'}, 'false'
     end
 end)
 
@@ -27,7 +32,7 @@ router:setCallback('^/posts/(?<id>\\d+)$', 'DELETE', function(request)
     if posts:delete(request.parameters['id']) then
         return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'true'
     else
-        return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'false'
+        return 500, {['Content-Type'] = 'application/json; charset=utf8'}, 'false'
     end
 end)
 

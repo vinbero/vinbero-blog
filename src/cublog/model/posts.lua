@@ -57,4 +57,9 @@ function _M.Posts:delete(id)
     end
 end
 
+function _M.Posts:destroy()
+    self.mysqlCon:close()
+    self.mysqlEnv:close()
+end
+
 return _M
