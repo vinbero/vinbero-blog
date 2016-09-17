@@ -4,7 +4,8 @@ local posts = require 'cublog.model.posts'.Posts.new()
 local json = require 'json'
 
 router:setCallback('^/posts$', 'POST', function(request)
-    return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, posts:create(request.parameters['title'], request.parameters['text'], request.parameters['private'])
+    local post = json:decode(request.body)
+    return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, posts:create(post.title, post.text, post.private)
 end)
 
 router:setCallback('^/posts$', 'GET', function(request)
@@ -21,7 +22,8 @@ router:setCallback('^/posts/(?<id>\\d+)$', 'GET', function(request)
 end)
 
 router:setCallback('^/posts/(?<id>\\d+)$', 'PUT', function(request)
-    if posts:update(request.parameters['id'], request.parameters['title'], request.parameters['text'], request.parameters['private']) then
+    local post = json:decode(request.body);
+    if posts:update(post.id, post.title, post.text, post.private) then
         return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'true'
     else
         return 500, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'false'
@@ -42,10 +44,6 @@ end
 
 function onBodyChunk(request, body_chunk)
     request.body = request.body .. body_chunk
-end
-
-function onBodyFinish(request)
-    request.queryString = request.body
 end
 
 function onRequestFinish(request)
