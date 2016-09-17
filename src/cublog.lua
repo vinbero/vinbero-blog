@@ -44,7 +44,6 @@ function onBodyFinish(request)
 end
 
 function onRequestFinish(request)
-    request.parameters = {}
     if request.queryString ~= nil then
         for pair in string.gmatch(request.queryString, '([^&]+)') do
             for key, value in string.gmatch(pair, '([^=]+)=([^=]+)') do
