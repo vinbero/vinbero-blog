@@ -4,7 +4,7 @@ local posts = require 'cublog.model.posts'.Posts.new()
 local json = require 'json'
 
 router:setCallback('^/posts$', 'POST', function(request)
-    local post = json:decode(request.body)
+    local post = json.decode(request.body)
     return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, posts:create(post.title, post.text, post.private)
 end)
 
@@ -22,7 +22,7 @@ router:setCallback('^/posts/(?<id>\\d+)$', 'GET', function(request)
 end)
 
 router:setCallback('^/posts/(?<id>\\d+)$', 'PUT', function(request)
-    local post = json:decode(request.body);
+    local post = json.decode(request.body);
     if posts:update(post.id, post.title, post.text, post.private) then
         return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'true'
     else
