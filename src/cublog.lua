@@ -1,61 +1,35 @@
 local cubelua = require 'cubelua'
 local router = cubelua.Router.new()
-router:setCallback('^/$', 'GET', function(request)
-   local body = function()
-       coroutine.yield('<h1>Hello World!</h1>')
-       for key, value in pairs(request) do
-           if type(value) == 'string' then
-               coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
-           end
-       end
-       for key, value in pairs(request.headers) do
-           coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
-       end
-   end
-   return 200, {['Content-Type'] = 'text/html; charset=utf8'}, body
+local posts = require 'cublog.model.posts'.Posts.new()
+local json = require 'json'
+
+router:setCallback('^/posts$', 'POST', function(request)
+    return 200, {['Content-Type'] = 'application/json; charset=utf8'}, posts:create(request.parameter['title'], request.parameter['text'], request.parameter['private'])
 end)
 
-math.randomseed(os.time())
-router:setCallback('^/access-token', 'POST', function(request)
-    if request.parameter['id'] == 'admin' and request.parameter['password'] == 'password' then
-        return 200, {['Content-Type'] = 'text/html; charset=utf8'}, math.random()
-    end 
-    return 401, {}, '401 Unauthorized'
+router:setCallback('^/posts$', 'GET', function(request)
+    return 200, {['Content-Type'] = 'application/json; charset=utf8'}, json.encode(posts:getAll()) 
 end)
 
-router:setCallback('^/error', 'GET', function(request)
-    return 500, {}, '500 Internal Server Error'
+router:setCallback('^/posts/(?<id>\\d+)$', 'GET', function(request)
+    return 200, {['Content-Type'] = 'application/json; charset=utf8'}, json.encode(posts:get(request.parameter['id']))
 end)
 
-router:setCallback('^/empty', 'GET', function(request)
-    return 200, {}
-end)
-
-router:setCallback('^/hello', 'GET', function(request)
-    return 200, {['Content-Type'] = 'text/html; charset=utf8'}, '<h1>Hello World</h1>'
-end)
-
-router:setCallback('^/image', 'GET', function(request)
-    local file = assert(io.open('tux.jpg', 'r'))
-    local body = file:read('*a')
-    file:close()
-    return 200, {['Content-Type'] = 'image/jpeg'}, body
-end)
-
-router:setCallback('^/param/(?<num>\\d+)$', 'GET', function(request)
-    local body = function()
-        for key, value in pairs(request.parameter) do
-            coroutine.yield('<h2>' .. key .. ': ' .. value .. '</h2>')
-        end
+router:setCallback('^/posts/(?<id>\\d+)$', 'PUT', function(request)
+    if posts:update(request.parameter['id'], request.parameter['title'], request.parameter['text'], request.parameter['private']) then
+        return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'true'
+    else
+        return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'false'
     end
-    return 200, {['Content-Type'] = 'text/html; charset=utf8'}, body
 end)
 
-function onRequestStart(request)
-end
-
-function onHeadersFinish(request)
-end
+router:setCallback('^/posts/(?<id>\\d+)$', 'DELETE', function(request)
+    if posts:delete(request.parameter['id']) then
+        return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'true'
+    else
+        return 200, {['Content-Type'] = 'application/json; charset=utf8'}, 'false'
+    end
+end)
 
 function getContentLength(request)
     return request.contentLength
