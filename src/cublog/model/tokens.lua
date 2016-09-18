@@ -24,8 +24,8 @@ function _M.Tokens:create()
     return token 
 end
 
-function _M.Tokens:isValid(id)
-    return true 
+function _M.Tokens:isValid(token)
+    return jwt.decode(token, settings['JWT-KEY'], true) ~= nil
 end
 
 return _M
