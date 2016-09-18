@@ -1,7 +1,7 @@
 local cubelua = require 'cubelua'
 local router = cubelua.Router.new()
 local posts = require 'cublog.model.posts'.Posts.new()
-local json = require 'json'
+local json = require 'cjson'
 
 router:setCallback('^/posts$', 'POST', function(request)
     local post = json.decode(request.body)
