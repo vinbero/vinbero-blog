@@ -1,14 +1,14 @@
 local _M = {}
 
 local mysql = require 'luasql.mysql'
-
+local settings = require 'cublog.model.settings'.Settings.new()
 _M.Posts = {}
 _M.Posts.__index = _M.Posts
 
 function _M.Posts.new()
     local self = setmetatable({}, _M.Posts)
     self.mysqlEnv = mysql.mysql()
-    self.mysqlCon = self.mysqlEnv:connect('cublog', 'root', 'root')
+    self.mysqlCon = self.mysqlEnv:connect(settings['DATABASE'], settings['DATABASE-ID'], settings['DATABASE-PASSWORD'])
     return self
 end
 

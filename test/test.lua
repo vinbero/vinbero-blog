@@ -61,8 +61,8 @@ function getContentLength(request)
     return request.contentLength
 end
 
-function onBodyChunk(request, body_chunk)
-    request.body = request.body .. body_chunk
+function onBodyChunk(request, bodyChunk)
+    request.body = request.body .. bodyChunk
 end
 
 function onBodyFinish(request)
