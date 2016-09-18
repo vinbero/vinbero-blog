@@ -5,7 +5,7 @@ local posts = require 'cublog.model.posts'.Posts.new()
 local tokens = require 'cublog.model.tokens'.Tokens.new()
 local json = require 'cjson'
 
-router:setCallback('^/posts$', 'POST', function(request)
+router:setCallback('^/posts/?$', 'POST', function(request)
     local status, token = pcall(string.match, request.headers['AUTHORIZATION'], 'Bearer (.+)')
     if status == false or token == nil or not tokens:isValid(token) then
         return 403, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
@@ -17,7 +17,7 @@ router:setCallback('^/posts$', 'POST', function(request)
     return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, posts:create(post.title, post.text, post.private)
 end)
 
-router:setCallback('^/posts$', 'GET', function(request)
+router:setCallback('^/posts/?$', 'GET', function(request)
     return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, json.encode(posts:getAll()) 
 end)
 
@@ -55,7 +55,7 @@ router:setCallback('^/posts/(?<id>\\d+)$', 'DELETE', function(request)
     return 500, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'false'
 end)
 
-router:setCallback('^/tokens$', 'POST', function(request)
+router:setCallback('^/tokens/?$', 'POST', function(request)
     local status, login = pcall(json.decode, request.body)
     if status == false then
         return 400, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
