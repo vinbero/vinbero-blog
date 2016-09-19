@@ -14,7 +14,11 @@ router:setCallback('^/posts/?$', 'POST', function(request)
     if status == false then
         return 400, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
     end
-    return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, posts:create(post.title, post.text, post.private)
+    local id = posts:create(post.title, post.text, post.private)
+    if id == nil then
+        return 500, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
+    end
+    return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, id
 end)
 
 router:setCallback('^/posts/?$', 'GET', function(request)

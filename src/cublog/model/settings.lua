@@ -5,9 +5,7 @@ _M.Settings.__index = _M.Settings
 
 function _M.Settings.new()
     local self = setmetatable({}, _M.Settings)
-    self['DATABASE'] = 'cublog'
-    self['DATABASE-ID'] = 'root'
-    self['DATABASE-PASSWORD'] = 'root'
+    self['DATABASE'] = 'cublog.db'
     self['ADMIN-ID'] = 'admin'
     self['ADMIN-PASSWORD'] = 'password'
     self['JWT-KEY'] = 'jwt-key'
