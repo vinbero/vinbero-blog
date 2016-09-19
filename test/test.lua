@@ -51,22 +51,12 @@ router:setCallback('^/param/(?<num>\\d+)$', 'GET', function(request)
     return 200, {['Content-Type'] = 'text/html; charset=utf8'}, body
 end)
 
-function onRequestStart(request)
-end
-
-function onHeadersFinish(request)
-end
-
 function getContentLength(request)
     return request.contentLength
 end
 
 function onBodyChunk(request, bodyChunk)
     request.body = request.body .. bodyChunk
-end
-
-function onBodyFinish(request)
-    request.queryString = request.body
 end
 
 function onRequestFinish(request)
