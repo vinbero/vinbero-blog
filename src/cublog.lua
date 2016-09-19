@@ -14,7 +14,7 @@ router:setCallback('^/posts/?$', 'POST', function(request)
     if status == false then
         return 400, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
     end
-    local id = posts:create(post.title, post.text, post.private)
+    local id = posts:create(post)
     if id == nil then
         return 500, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
     end
@@ -26,9 +26,9 @@ router:setCallback('^/posts/?$', 'GET', function(request)
 end)
 
 router:setCallback('^/posts/(?<id>\\d+)$', 'GET', function(request)
-    local post = posts:get(request.parameters['id'])
+    local post = posts:get({['id'] = request.parameters['id']})
     if post ~= nil then
-        return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, json.encode(posts:get(request.parameters['id']))
+        return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, json.encode(post)
     end 
     return 400, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
 end)
@@ -42,7 +42,7 @@ router:setCallback('^/posts/(?<id>\\d+)$', 'PUT', function(request)
     if status == false then
         return 400, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
     end
-    if posts:update(post.id, post.title, post.text, post.private) then
+    if posts:update(post) then
         return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'true'
     end
     return 500, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'false'
@@ -53,7 +53,7 @@ router:setCallback('^/posts/(?<id>\\d+)$', 'DELETE', function(request)
     if status == false or token == nil or not tokens:isValid(token) then
         return 403, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
     end
-    if posts:delete(request.parameters['id']) then
+    if posts:delete({['id'] = request.parameters['id']}) then
         return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'true'
     end 
     return 500, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'false'

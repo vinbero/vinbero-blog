@@ -16,36 +16,53 @@ function _M.Posts.new()
     return self
 end
 
-function _M.Posts:create(title, text, private)
-    if self.db:exec("INSERT INTO `posts`(`title`, `text`, `cdate`, `mdate`, `private`) VALUES('" .. title .. "', '" .. text .. "', " .. "DATE('now', 'localtime'), DATE('now', 'localtime'), " .. private .. ")") == 0 then
-        for row in self.db:rows("SELECT LAST_INSERT_ROWID() FROM `posts`") do
-            return row[1] 
-        end
+function _M.Posts:create(post)
+    local insertStatement = self.db:prepare("INSERT INTO `posts`(`title`, `text`, `cdate`, `mdate`, `private`) VALUES($title, $text, DATE('now', 'localtime'), DATE('now', 'localtime'), $private)")
+    insertStatement:bind_names(post)
+    insertStatement:step()
+    insertStatement:reset()
+    local selectStatement = self.db:prepare("SELECT LAST_INSERT_ROWID() FROM `posts`")
+    for row in selectStatement:rows() do
+        selectStatement:reset()
+        return row[1]
     end
     return nil 
 end
 
-function _M.Posts:get(id)
-    for row in self.db:nrows("SELECT `id`, `title`, `text`, `cdate`, `mdate`, `private` FROM `posts` WHERE `id` = " .. id) do
+function _M.Posts:get(post)
+    local selectStatement = self.db:prepare("SELECT `id`, `title`, `text`, `cdate`, `mdate`, `private` FROM `posts` WHERE `id` = $id")
+    selectStatement:bind_names(post)
+    for row in selectStatement:nrows() do
+        selectStatement:reset()
         return row
     end
     return nil 
 end
 
 function _M.Posts:getAll()
+    local selectStatement = self.db:prepare("SELECT `id`, `title`, `cdate`, `mdate`, `private` FROM `posts`")
     local rows = {}
-    for row in self.db:nrows("SELECT `id`, `title`, `cdate`, `mdate`, `private` FROM `posts`") do
+    for row in selectStatement:nrows() do
         table.insert(rows, row)
     end
+    selectStatement:reset()
     return rows
 end
 
-function _M.Posts:update(id, title, text, private)
-    return self.db:exec("UPDATE `posts` SET `title` = '" .. title .. "', `text` = '" .. text .. "', `mdate` = DATE('now', 'localtime'), `private` = " .. private .. " WHERE `id` = " .. id) == 0
+function _M.Posts:update(post)
+    local updateStatement = self.db:prepare("UPDATE `posts` SET `title` = $title, `text` = $text, `mdate` = DATE('now', 'localtime'), `private` = $private WHERE `id` = $id")
+    updateStatement:bind_names(post)
+    local status = updateStatement:step() == sqlite.DONE
+    updateStatement:reset()
+    return status
 end
 
-function _M.Posts:delete(id)
-    return self.db:exec("DELETE FROM `posts` WHERE `id` = '" .. self.mysqlCon:escape(id) .. "'") == 0
+function _M.Posts:delete(post)
+    local deleteStatement = self.db:prepare("DELETE FROM `posts` WHERE `id` = $id")
+    deleteStatement:bind_names(post)
+    local status = deleteStatement:step() == sqlite.DONE
+    deleteStatement:reset()
+    return status
 end
 
 function _M.Posts:destroy()
