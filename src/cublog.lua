@@ -28,6 +28,10 @@ end)
 router:setCallback('^/posts/(?<id>\\d+)$', 'GET', function(request)
     local post = posts:get({['id'] = request.parameters['id']})
     if post ~= nil then
+        local status, token = pcall(string.match, request.headers['AUTHORIZATION'], 'Bearer (.+)')
+        if (post.private == true or post.private == 1) and (status == false or token == nil or not tokens:isValid(token)) then
+            return 403, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
+        end
         return 200, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, json.encode(post)
     end 
     return 400, {['Content-Type'] = 'application/json; charset=utf8', ['Access-Control-Allow-Origin'] = '*'}, 'null'
