@@ -6,12 +6,12 @@ local tokens = require "cublog.model.tokens".Tokens.new()
 local json = require "cjson"
 
 router:setCallback("^/posts/?$", "POST", function(request)
-    local status, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
-    if status == false or token == nil or not tokens:isValid(token) then
+    local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
+    if not ok or token == nil or not tokens:isValid(token) then
         return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
-    local status, post = pcall(json.decode, request.body)
-    if status == false then
+    local ok, post = pcall(json.decode, request.body)
+    if not ok then
         return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
     local id = posts:create(post)
@@ -28,8 +28,8 @@ end)
 router:setCallback("^/posts/(?<id>\\d+)$", "GET", function(request)
     local post = posts:get({["id"] = request.parameters["id"]})
     if post ~= nil then
-        local status, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
-        if (post.private == true or post.private == 1) and (status == false or token == nil or not tokens:isValid(token)) then
+        local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
+        if (post.private == true or post.private == 1) and (not ok or token == nil or not tokens:isValid(token)) then
             return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
         end
         return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(post)
@@ -38,12 +38,12 @@ router:setCallback("^/posts/(?<id>\\d+)$", "GET", function(request)
 end)
 
 router:setCallback("^/posts/(?<id>\\d+)$", "PUT", function(request)
-    local status, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
-    if status == false or token == nil or not tokens:isValid(token) then
+    local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
+    if not ok or token == nil or not tokens:isValid(token) then
         return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
-    local status, post = pcall(json.decode, request.body)
-    if status == false then
+    local ok, post = pcall(json.decode, request.body)
+    if not ok then
         return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
     if posts:update(post) then
@@ -53,8 +53,8 @@ router:setCallback("^/posts/(?<id>\\d+)$", "PUT", function(request)
 end)
 
 router:setCallback("^/posts/(?<id>\\d+)$", "DELETE", function(request)
-    local status, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
-    if status == false or token == nil or not tokens:isValid(token) then
+    local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
+    if not ok or token == nil or not tokens:isValid(token) then
         return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
     if posts:delete({["id"] = request.parameters["id"]}) then
@@ -64,8 +64,8 @@ router:setCallback("^/posts/(?<id>\\d+)$", "DELETE", function(request)
 end)
 
 router:setCallback("^/tokens/?$", "POST", function(request)
-    local status, login = pcall(json.decode, request.body)
-    if status == false then
+    local ok, login = pcall(json.decode, request.body)
+    if not ok then
         return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
     if login.id == settings["ADMIN-ID"] and login.password == settings["ADMIN-PASSWORD"] then

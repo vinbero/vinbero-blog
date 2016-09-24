@@ -1,6 +1,6 @@
 local _M = {}
 
-local jwt = require "luajwt"
+local jwt = require "gonapps.jwt"
 local settings = require "cublog.model.settings".Settings.new()
 
 _M.Tokens = {}
@@ -17,7 +17,6 @@ function _M.Tokens:create()
         nbf = os.time(),
         exp = os.time() + 3600,
     }
-
     local alg = "HS256"
     local token, err = jwt.encode(payload, settings["JWT-KEY"], alg)
 
@@ -25,7 +24,8 @@ function _M.Tokens:create()
 end
 
 function _M.Tokens:isValid(token)
-    return jwt.decode(token, settings["JWT-KEY"], true) ~= nil
+    local ok = pcall(jwt.decode, token, settings["JWT-KEY"])
+    return ok
 end
 
 return _M
