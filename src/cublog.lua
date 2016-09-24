@@ -1,9 +1,9 @@
 local cubelua = require "cubelua"
-local router = cubelua.Router.new()
-local settings = require "cublog.model.settings".Settings.new()
-local posts = require "cublog.model.posts".Posts.new()
-local tokens = require "cublog.model.tokens".Tokens.new()
-local json = require "cjson"
+local router = cubelua.new()
+local settings = require "cublog.model.settings".new()
+local posts = require "cublog.model.posts".new()
+local tokens = require "cublog.model.tokens".new()
+local json = require "rapidjson"
 
 router:setCallback("^/posts/?$", "POST", function(request)
     local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
@@ -74,6 +74,16 @@ router:setCallback("^/tokens/?$", "POST", function(request)
     return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
 end)
 
+local function parseQueryString(request)
+    if request.queryString ~= nil then
+        for pair in string.gmatch(request.queryString, "([^&]+)") do
+            for key, value in string.gmatch(pair, "([^=]+)=([^=]+)") do
+                request.parameters[decodeURL(key)] = decodeURL(value)
+            end
+        end
+    end
+end
+
 function getContentLength(request)
     return request.contentLength
 end
@@ -83,7 +93,7 @@ function onBodyChunk(request, bodyChunk)
 end
 
 function onRequestFinish(request)
-    cubelua.parseQueryString(request)
+    parseQueryString(request)
     return router:route(request)
 end
 

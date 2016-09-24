@@ -1,10 +1,8 @@
 local _M = {}
+_M.__index = _M
 
-_M.Settings = {}
-_M.Settings.__index = _M.Settings
-
-function _M.Settings.new()
-    local self = setmetatable({}, _M.Settings)
+function _M.new()
+    local self = setmetatable({}, _M)
     self["DATABASE"] = "cublog.db"
     self["ADMIN-ID"] = "admin"
     self["ADMIN-PASSWORD"] = "password"

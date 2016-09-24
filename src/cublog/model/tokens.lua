@@ -1,17 +1,15 @@
 local _M = {}
-
 local jwt = require "gonapps.jwt"
-local settings = require "cublog.model.settings".Settings.new()
+local settings = require "cublog.model.settings".new()
 
-_M.Tokens = {}
-_M.Tokens.__index = _M.Tokens
+_M.__index = _M
 
-function _M.Tokens.new()
-    local self = setmetatable({}, _M.Tokens)
+function _M.new()
+    local self = setmetatable({}, _M)
     return self
 end
 
-function _M.Tokens:create()
+function _M:create()
     local payload = {
         iss = settings["JWT-ISSUER"],
         nbf = os.time(),
@@ -19,11 +17,10 @@ function _M.Tokens:create()
     }
     local alg = "HS256"
     local token, err = jwt.encode(payload, settings["JWT-KEY"], alg)
-
     return token 
 end
 
-function _M.Tokens:isValid(token)
+function _M:isValid(token)
     local ok = pcall(jwt.decode, token, settings["JWT-KEY"])
     return ok
 end
