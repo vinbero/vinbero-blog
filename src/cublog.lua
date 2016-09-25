@@ -3,12 +3,13 @@ local settings = require "cublog.model.settings".new()
 local posts = require "cublog.model.posts".new()
 local tokens = require "cublog.model.tokens".new()
 local json = require "rapidjson"
+local urlDecoder = require "gonapps.url.decoder"
 
 function parseQueryString(request) -- request:parseQueryString
     if request.queryString ~= nil then
         for pair in string.gmatch(request.queryString, "([^&]+)") do
             for key, value in string.gmatch(pair, "([^=]+)=([^=]+)") do
-                request.parameters[decodeURL(key)] = decodeURL(value)
+                request.parameters[urlDecoder.decode(key)] = urlDecoder.decode(value)
             end
         end
     end
