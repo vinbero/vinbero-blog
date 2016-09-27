@@ -84,10 +84,6 @@ router:setCallback("^/tokens/?$", "POST", function(request)
     return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
 end)
 
-function getContentLength(request)
-    return request.contentLength
-end
-
 function onBodyChunk(request, bodyChunk)
     request.body = request.body .. bodyChunk
 end
