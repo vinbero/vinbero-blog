@@ -33,6 +33,11 @@ function _M:get(post)
     selectStatement:bind_names(post)
     for row in selectStatement:nrows() do
         selectStatement:reset()
+        if row.private == 1 then
+            row.private = true
+        else
+            row.private = false
+        end
         return row
     end
     return nil 
@@ -42,6 +47,11 @@ function _M:getAll()
     local selectStatement = self.db:prepare("SELECT `id`, `title`, `cdate`, `mdate`, `private` FROM `posts`")
     local rows = {}
     for row in selectStatement:nrows() do
+        if row.private == 1 then
+            row.private = true
+        else
+            row.private = false
+        end
         table.insert(rows, row)
     end
     selectStatement:reset()
