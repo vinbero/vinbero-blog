@@ -18,7 +18,7 @@ end
 
 router:setCallback("^/posts/?$", "POST", function(request)
     local cookie = Cookie.new(request.headers["COOKIE"])
-    if cookie.data["JWT"] == nil or not tokens:isValid(cookie.data["JWT"]) then
+    if cookie.data["CublogToken"] == nil or not tokens:isValid(cookie.data["CublogToken"]) then
         return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
     local ok, post = pcall(json.decode, request.body)
@@ -40,7 +40,7 @@ router:setCallback("^/posts/(?<id>\\d+)$", "GET", function(request)
     local post = posts:get({["id"] = request.parameters["id"]})
     if post ~= nil then
         local cookie = Cookie.new(request.headers["COOKIE"])
-        if (post.private == true or post.private == 1) and (cookie.data["JWT"] == nil or not tokens:isValid(cookie.data["JWT"])) then
+        if (post.private == true or post.private == 1) and (cookie.data["CublogToken"] == nil or not tokens:isValid(cookie.data["CublogToken"])) then
             return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
         end
         return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(post)
@@ -50,7 +50,7 @@ end)
 
 router:setCallback("^/posts/(?<id>\\d+)$", "PUT", function(request)
     local cookie = Cookie.new(request.headers["COOKIE"])
-    if cookie.data["JWT"] == nil or not tokens:isValid(cookie.data["JWT"]) then
+    if cookie.data["CublogToken"] == nil or not tokens:isValid(cookie.data["CublogToken"]) then
         return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
     local ok, post = pcall(json.decode, request.body)
@@ -65,7 +65,7 @@ end)
 
 router:setCallback("^/posts/(?<id>\\d+)$", "DELETE", function(request)
     local cookie = Cookie.new(request.headers["COOKIE"])
-    if cookie.data["JWT"] == nil or not tokens:isValid(cookie.data["JWT"]) then
+    if cookie.data["CublogToken"] == nil or not tokens:isValid(cookie.data["CublogToken"]) then
         return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
     if posts:delete({["id"] = request.parameters["id"]}) then
@@ -81,7 +81,7 @@ router:setCallback("^/tokens/?$", "POST", function(request)
     end
     if login.id == settings["ADMIN-ID"] and login.password == settings["ADMIN-PASSWORD"] then
         local cookie = Cookie.new()
-        cookie.data["JWT"] = tokens:create()
+        cookie.data["CublogToken"] = tokens:create()
         cookie.flags["HttpOnly"] = true
         return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*", ["Set-Cookie"] = cookie:toString()}, "true"
     end 
