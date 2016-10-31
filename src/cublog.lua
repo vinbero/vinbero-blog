@@ -82,7 +82,6 @@ router:setCallback("^/tokens/?$", "POST", function(request)
     if login.id == settings["ADMIN-ID"] and login.password == settings["ADMIN-PASSWORD"] then
         local cookie = Cookie.new()
         cookie.data["CublogToken"] = tokens:create()
-        cookie.flags["HttpOnly"] = true
         return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*", ["Set-Cookie"] = cookie:toString()}, "true"
     end 
     return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
