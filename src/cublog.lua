@@ -1,20 +1,17 @@
-local router = require "tucube.http.router".new()
-local settings = require "cublog.model.settings".new()
-local posts = require "cublog.model.posts".new()
-local tokens = require "cublog.model.tokens".new()
 local json = require "rapidjson"
 local urlDecoder = require "gonapps.url.decoder"
 local Cookie = require "gonapps.cookie"
+local urlQueryParser = require "gonapps.url.query.parser"
 
-function parseQueryString(request) -- request:parseQueryString
-    if request.queryString ~= nil then
-        for pair in string.gmatch(request.queryString, "([^&]+)") do
-            for key, value in string.gmatch(pair, "([^=]+)=([^=]+)") do
-                request.parameters[urlDecoder.decode(key)] = urlDecoder.decode(value)
-            end
-        end
-    end
-end
+local Router = require "tucube.http.router"
+local Settings = require "cublog.model.settings"
+local Posts = require "cublog.model.posts"
+local Tokens = require "cublog.model.tokens"
+
+local router = Router.new()
+local settings = Settings.new()
+local posts = Posts.new()
+local tokens = Tokens.new()
 
 router:setCallback("^/posts/?$", "POST", function(request)
     local cookie = Cookie.new(request.headers["COOKIE"])
@@ -89,7 +86,7 @@ router:setCallback("^/tokens/?$", "POST", function(request)
 end)
 
 function onRequestFinish(request)
-    parseQueryString(request)
+    urlQueryParser.parse(request.queryString, request.parameters)
     return router:route(request)
 end
 
