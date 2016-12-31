@@ -81,6 +81,10 @@ router:setCallback("^/tokens/?$", "POST", function(request)
     return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
 end)
 
+router:setCallback(".*", "OPTIONS", function(request)
+    return 200, {["Access-Control-Allow-Origin"] = "*", ["Access-Control-Allow-Methods"] = "*", ["Access-Control-Allow-Headers"] = "Authorization", ["Access-Control-Max-Age"] = "86400"} -- Access-Control-Allow-Headers wildcard is not supported in chrome yet
+end)
+
 function onRequestFinish(request)
     urlQueryParser.parse(request.queryString, request.parameters)
     return router:route(request)
