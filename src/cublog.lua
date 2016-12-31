@@ -2,7 +2,7 @@ local json = require "rapidjson"
 local urlDecoder = require "gonapps.url.decoder"
 local urlQueryParser = require "gonapps.url.query.parser"
 
-local Router = require "tucube.http.router"
+local Router = require "gonapps.url.router"
 local Settings = require "cublog.model.settings"
 local Posts = require "cublog.model.posts"
 local Tokens = require "cublog.model.tokens"
