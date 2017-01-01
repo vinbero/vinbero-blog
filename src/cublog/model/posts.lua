@@ -43,8 +43,8 @@ function _M:get(post)
     return nil 
 end
 
-function _M:getAll()
-    local selectStatement = self.db:prepare("SELECT `id`, `title`, `cdate`, `mdate`, `private` FROM `posts`")
+function _M:getAll(includingPrivate)
+    local selectStatement = self.db:prepare("SELECT `id`, `title`, `text`, `cdate`, `mdate`, `private` FROM `posts`")
     local rows = {}
     for row in selectStatement:nrows() do
         if row.private == 1 then
@@ -52,7 +52,9 @@ function _M:getAll()
         else
             row.private = false
         end
-        table.insert(rows, row)
+        if row.private == false or (row.private == true and includingPrivate == true) then
+            table.insert(rows, row)
+        end
     end
     selectStatement:reset()
     return rows
