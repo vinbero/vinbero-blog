@@ -15,15 +15,15 @@ local tokens = Tokens.new()
 router:setCallback("^/posts/?$", "POST", function(request)
     local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
     if not ok or token == nil or not tokens:isValid(token) then
-        return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+        return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end
     local ok, post = pcall(json.decode, request.body)
     if not ok then
-        return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+        return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end
     local id = posts:create(post)
     if id == nil then
-        return 500, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+        return 500, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end
     return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(posts:get({["id"] = id}))
 end)
@@ -45,52 +45,52 @@ router:setCallback("^/posts/(?<id>\\d+)$", "GET", function(request)
     if post ~= nil then
         local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
         if (post.private == true or post.private == 1) and (not ok or token == nil or not tokens:isValid(token)) then
-            return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+            return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
         end
         return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(post)
     end 
-    return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+    return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
 end)
 
 router:setCallback("^/posts/(?<id>\\d+)$", "PUT", function(request)
     local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
     if not ok or token == nil or not tokens:isValid(token) then
-        return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+        return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end
     local ok, post = pcall(json.decode, request.body)
     if not ok then
-        return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+        return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end
     if posts:update(post) then
         return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(posts:get({["id"] = request.parameters["id"]}))
     end
-    return 500, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "false"
+    return 500, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
 end)
 
 router:setCallback("^/posts/(?<id>\\d+)$", "DELETE", function(request)
     local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
     if not ok or token == nil or not tokens:isValid(token) then
-        return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+        return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end
     if posts:delete({["id"] = request.parameters["id"]}) then
-        return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "true"
+        return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end 
-    return 500, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "false"
+    return 500, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
 end)
 
 router:setCallback("^/tokens/?$", "POST", function(request)
     local ok, login = pcall(json.decode, request.body)
     if not ok then
-        return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+        return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end
     if login.id == settings["ADMIN-ID"] and login.password == settings["ADMIN-PASSWORD"] then
         return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(tokens:create())
     end 
-    return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
+    return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
 end)
 
 router:setCallback(".*", "OPTIONS", function(request)
-    return 200, {["Access-Control-Allow-Origin"] = "*", ["Access-Control-Allow-Methods"] = request.headers["ACCESS-CONTROL-REQUEST-METHOD"], ["Access-Control-Allow-Headers"] = request.headers["ACCESS-CONTROL-REQUEST-HEADERS"], ["Access-Control-Max-Age"] = "86400"} -- Access-Control-Allow-Headers wildcard is not supported in chrome yet
+    return 200, {["Access-Control-Allow-Origin"] = "*", ["Access-Control-Allow-Methods"] = request.headers["ACCESS-CONTROL-REQUEST-METHOD"], ["Access-Control-Allow-Headers"] = request.headers["ACCESS-CONTROL-REQUEST-HEADERS"], ["Access-Control-Max-Age"] = "86400"}, "\"\"" -- Access-Control-Allow-Headers wildcard is not supported in chrome yet
 end)
 
 function onRequestFinish(request)
