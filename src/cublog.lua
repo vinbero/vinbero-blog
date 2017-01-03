@@ -62,7 +62,7 @@ router:setCallback("^/posts/(?<id>\\d+)$", "PUT", function(request)
         return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "null"
     end
     if posts:update(post) then
-        return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "true"
+        return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(posts:get({["id"] = request.parameters["id"]}))
     end
     return 500, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "false"
 end)
