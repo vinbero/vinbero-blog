@@ -1,17 +1,18 @@
 local _M = {}
 local sqlite = require "lsqlite3"
-local settings = require "cublog.model.settings".new()
+local Settings = require "cublog.model.settings"
+local settings = Settings.new()
 
 _M.__index = _M
 
 function _M.new()
     local self = setmetatable({}, _M)
-    local file = io.open(settings["DATABASE"])
+    local file = io.open(settings["database"])
     if file == nil then
        error("Databse not found") 
     end
     file:close()
-    self.db = sqlite.open(settings["DATABASE"])
+    self.db = sqlite.open(settings["database"])
     return self
 end
 

@@ -1,14 +1,13 @@
 local _M = {}
+local json = require "rapidjson"
 _M.__index = _M
 
 function _M.new()
     local self = setmetatable({}, _M)
-    self["DATABASE"] = "cublog.db"
-    self["ADMIN-ID"] = "admin"
-    self["ADMIN-PASSWORD"] = "password"
-    self["JWT-KEY"] = "jwt-key"
-    self["JWT-ISSUER"] = "cublog"
-   return self
+    for key, value in pairs(json.decode(arg)) do
+        self[key] = value
+    end
+    return self
 end
 
 return _M

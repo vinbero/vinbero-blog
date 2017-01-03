@@ -83,7 +83,7 @@ router:setCallback("^/tokens/?$", "POST", function(request)
     if not ok then
         return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end
-    if login.id == settings["ADMIN-ID"] and login.password == settings["ADMIN-PASSWORD"] then
+    if login.id == settings["admin.id"] and login.password == settings["admin.password"] then
         return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(tokens:create())
     end 
     return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
