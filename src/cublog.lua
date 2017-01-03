@@ -30,7 +30,14 @@ end)
 
 router:setCallback("^/posts/?$", "GET", function(request)
     local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
-    return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(posts:getAll(not (not ok or token == nil or not tokens:isValid(token)))) 
+    local posts = posts:getAll(not (not ok or token == nil or not tokens:isValid(token)))
+    local responseBody
+    if #posts == 0 then
+        responseBody = "[]"
+    else
+        responseBody = json.encode(posts)
+    end
+    return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, responseBody 
 end)
 
 router:setCallback("^/posts/(?<id>\\d+)$", "GET", function(request)
