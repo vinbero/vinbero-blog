@@ -49,7 +49,7 @@ router:setCallback("^/posts/(?<id>\\d+)$", "GET", function(request)
         end
         return 200, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, json.encode(post)
     end 
-    return 400, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
+    return 404, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
 end)
 
 router:setCallback("^/posts/(?<id>\\d+)$", "PUT", function(request)
@@ -88,6 +88,18 @@ router:setCallback("^/tokens/?$", "POST", function(request)
     end 
     return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
 end)
+
+router:setCallback("^/backup$", "GET", function(request)
+    local ok, token = pcall(string.match, request.headers["AUTHORIZATION"], "Bearer (.+)")
+    if not ok or token == nil or not tokens:isValid(token) then
+        return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
+    end
+    local file = io.open(settings["database"], "r")
+    local responseBody = file:read("*all")
+    file:close()
+    return 200, {["Content-Type"] = "application/octet-stream", ["Content-Disposition"] = "attachment; filename='BACKUP.db'", ["Access-Control-Allow-Origin"] = "*"}, responseBody
+end)
+ 
 
 router:setCallback(".*", "OPTIONS", function(request)
     return 200, {["Access-Control-Allow-Origin"] = "*", ["Access-Control-Allow-Methods"] = request.headers["ACCESS-CONTROL-REQUEST-METHOD"], ["Access-Control-Allow-Headers"] = request.headers["ACCESS-CONTROL-REQUEST-HEADERS"], ["Access-Control-Max-Age"] = "86400"}, "\"\"" -- Access-Control-Allow-Headers wildcard is not supported in chrome yet
