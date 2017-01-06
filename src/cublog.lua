@@ -94,10 +94,7 @@ router:setCallback("^/backup$", "GET", function(request)
     if not ok or token == nil or not tokens:isValid(token) then
         return 403, {["Content-Type"] = "application/json; charset=utf8", ["Access-Control-Allow-Origin"] = "*"}, "\"\""
     end
-    local file = io.open(settings["database"], "r")
-    local responseBody = file:read("*all")
-    file:close()
-    return 200, {["Content-Type"] = "application/octet-stream", ["Content-Disposition"] = "attachment; filename='BACKUP.db'", ["Access-Control-Allow-Origin"] = "*"}, responseBody
+    return 200, {["Content-Type"] = "application/octet-stream", ["Content-Disposition"] = "attachment; filename='BACKUP.db'", ["Access-Control-Allow-Origin"] = "*"}, io.open(settings["database"], "r")
 end)
  
 
