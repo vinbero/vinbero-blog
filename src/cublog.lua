@@ -103,7 +103,7 @@ router:setCallback(".*", "OPTIONS", function(request)
 end)
 
 function onRequestFinish(request)
-    urlQueryParser.parse(request.queryString, request.parameters)
+    request.parameters = urlQueryParser.parse(request.queryString)
     return router:route(request)
 end
 
