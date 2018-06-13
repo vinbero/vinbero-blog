@@ -102,9 +102,9 @@ router:setCallback(".*", "OPTIONS", function(request)
     return 200, {["Access-Control-Allow-Origin"] = "*", ["Access-Control-Allow-Methods"] = request.headers["ACCESS-CONTROL-REQUEST-METHOD"], ["Access-Control-Allow-Headers"] = request.headers["ACCESS-CONTROL-REQUEST-HEADERS"], ["Access-Control-Max-Age"] = "86400"}, "\"\"" -- Access-Control-Allow-Headers wildcard is not supported in chrome yet
 end)
 
-function onRequestFinish(request)
-    request.parameters = urlQueryParser.parse(request.queryString)
-    return router:route(request)
+function onRequestFinish(client)
+    client.request.parameters = urlQueryParser.parse(client.request.queryString)
+    return router:route(client)
 end
 
 function onDestroy()

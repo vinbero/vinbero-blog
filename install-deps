@@ -1,0 +1,6 @@
+sudo luarocks install lsqlite3
+sudo luarocks install rapidjson
+sudo luarocks install gonapps-url-decoder
+sudo luarocks install gonapps-url-query-parser
+sudo luarocks install gonapps-url-router
+sudo luarocks install gonapps-jwt
