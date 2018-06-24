@@ -27,7 +27,7 @@
         "path": "/usr/local/lib/vinbero/vinbero_mt_http_lua.so",
         "config": {
             "vinbero_mt_http_lua.scriptFile": "/usr/share/lua/5.3/cublog.lua",
-            "vinbero_mt_http_lua.scriptArgs": "{\"database\": \"cublog.db\"}"
+            "vinbero_mt_http_lua.scriptArg": "{\"database\": \"cublog.db\"}"
         },
         "next": []
     }
