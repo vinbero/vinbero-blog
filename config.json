@@ -5,7 +5,7 @@
     },
     "vinbero_tcp": {
         "path": "/usr/lib/vinbero/vinbero_tcp.so",
-        "config": {"vinbero_tcp.port": 80, "vinbero_tcp.reuseAddress": true},
+        "config": {"vinbero_tcp.port": 8000, "vinbero_tcp.reuseAddress": true},
         "next": ["vinbero_mt"]
     }, 
     "vinbero_mt": {
