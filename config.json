@@ -27,7 +27,7 @@
         "path": "/usr/lib/vinbero/vinbero_mt_http_lua.so",
         "config": {
             "vinbero_mt_http_lua.scriptFile": "/usr/share/lua/5.3/cublog.lua",
-            "vinbero_mt_http_lua.scriptArg": "{\"database\": \"/var/lib/cublog/cublog.db\", \"admin.id\": \"admin\", \"admin.password\": \"password\"}"
+            "vinbero_mt_http_lua.scriptArg": "{\"database\": \"/var/lib/cublog/cublog.db\", \"admin.id\": \"admin\", \"admin.password\": \"password\", \"jwt.issuer\":\"jwtissuer\",\"jwt.key\":\"jwtkey\"}"
         },
         "next": []
     }
