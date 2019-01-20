@@ -15,6 +15,8 @@ RUN luarocks-5.3 install gonapps-url-query-parser
 RUN luarocks-5.3 install gonapps-url-router
 RUN luarocks-5.3 install gonapps-jwt
 RUN mkdir /var/lib/cublog
+RUN mkdir /srv/html
+RUN cp /vinbero-blog-frontend/* /srv/html/
 RUN lua5.3 /vinbero-blog/gendb.lua /var/lib/cublog/cublog.db
 RUN cp -r /vinbero-blog/src/* /usr/share/lua/5.3/
 RUN cp /vinbero-blog/config.json /srv/config.json
