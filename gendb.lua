@@ -1,4 +1,3 @@
-#!/usr/bin/lua5.3
 local sqlite = require 'lsqlite3'
 if arg[1] == nil then
     arg[1] = './cublog.db'
