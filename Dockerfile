@@ -1,5 +1,5 @@
 
-FROM vinbero/alpine-vinbero_mt_http_lua
+FROM vinbero/vinbero_mt_http_lua
 MAINTAINER Byeonggon Lee (gonny952@gmail.com)
 
 EXPOSE 80
