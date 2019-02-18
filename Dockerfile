@@ -24,4 +24,4 @@ RUN cp -r /usr/src/vinbero-blog/src/* /usr/share/lua/5.3/
 RUN cp /usr/src/vinbero-blog/vinbero-config.json /srv/vinbero-config.json
 RUN cp /usr/src/vinbero-blog/cublog-config-template.json /srv/cublog-config-template.json
 RUN cp /usr/src/vinbero-blog/nginx.conf /etc/nginx/nginx.conf
-CMD nginx; cp /srv/cublog-config-template.json /srv/cublog-config.json; vinbero -c /srv/vinbero-config.json
+CMD nginx; jq ".[\"admin.password\"] |= \"$PASSWORD\"" /srv/cublog-config-template.json > /srv/cublog-config.json; vinbero -c /srv/vinbero-config.json

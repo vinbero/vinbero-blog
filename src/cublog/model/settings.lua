@@ -6,7 +6,7 @@ function _M.new()
     local self = setmetatable({}, _M)
     local file = io.open(vinbero.arg)
     if file == nil then
-       error("Databse not found") 
+       error("Config file not found") 
     end
     local content = file:read("a")
     for key, value in pairs(json.decode(content)) do
