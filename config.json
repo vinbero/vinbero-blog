@@ -4,27 +4,27 @@
         "next": ["vinbero_tcp"]
     },
     "vinbero_tcp": {
-        "path": "/usr/lib/vinbero/vinbero_tcp.so",
+        "paths": ["/usr/lib/vinbero/vinbero_tcp.so"],
         "config": {"vinbero_tcp.port": 8000, "vinbero_tcp.reuseAddress": true},
         "next": ["vinbero_mt"]
     }, 
     "vinbero_mt": {
-        "path": "/usr/lib/vinbero/vinbero_mt.so",
+        "paths": ["/usr/lib/vinbero/vinbero_mt.so"],
         "config": {"vinbero_mt.workerCount": 4},
-        "next": ["vinbero_tcp_mt_epoll"]
+        "next": ["vinbero_strm_mt_epoll"]
     },
-    "vinbero_tcp_mt_epoll": {
-        "path": "/usr/lib/vinbero/vinbero_tcp_mt_epoll.so",
+    "vinbero_strm_mt_epoll": {
+        "paths": ["/usr/lib/vinbero/vinbero_strm_mt_epoll.so"],
         "config": {},
         "next": ["vinbero_mt_epoll_http"]
     },
     "vinbero_mt_epoll_http": {
-        "path": "/usr/lib/vinbero/vinbero_mt_epoll_http.so",
+        "paths": ["/usr/lib/vinbero/vinbero_mt_epoll_http.so"],
         "config": {},
         "next": ["vinbero_mt_http_lua"]
     },
     "vinbero_mt_http_lua": {
-        "path": "/usr/lib/vinbero/vinbero_mt_http_lua.so",
+        "paths": ["/usr/lib/vinbero/vinbero_mt_http_lua.so"],
         "config": {
             "vinbero_mt_http_lua.scriptFile": "/usr/share/lua/5.3/cublog.lua",
             "vinbero_mt_http_lua.scriptArg": "{\"database\": \"/var/lib/cublog/cublog.db\", \"admin.id\": \"admin\", \"admin.password\": \"password\", \"jwt.issuer\":\"jwtissuer\",\"jwt.key\":\"jwtkey\"}"
