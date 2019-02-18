@@ -1,0 +1,7 @@
+{
+  "database": "/var/lib/cublog/cublog.db",
+  "admin.id": "admin",
+  "admin.password": "password",
+  "jwt.issuer":"jwtissuer",
+  "jwt.key":"jwtkey"
+}
