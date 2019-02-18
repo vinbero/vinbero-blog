@@ -4,7 +4,9 @@ MAINTAINER Byeonggon Lee (gonny952@gmail.com)
 
 EXPOSE 80
 
-RUN apk update && apk add --no-cache luarocks pcre-dev sqlite-dev g++ openssl-dev nginx
+ENV PASSWORD password
+
+RUN apk update && apk add --no-cache luarocks pcre-dev sqlite-dev g++ openssl-dev nginx jq
 
 RUN git clone https://github.com/vinbero/vinbero-blog
 RUN git clone https://github.com/vinbero/vinbero-blog-frontend
@@ -23,4 +25,4 @@ RUN cp /vinbero-blog/config.json /srv/config.json
 RUN cp /vinbero-blog/nginx.conf /etc/nginx/nginx.conf
 RUN cp /vinbero-blog/start.sh /start.sh
 RUN chmod +x /start.sh
-CMD ["/start.sh"]
+CMD nginx; vinbero -c /srv/config.json
